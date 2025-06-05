@@ -30,8 +30,8 @@ body {
 
 .canvas-frame {
     position: relative;
-    width: 1160px; /* Increased from 880px */
-    height: 780px; /* Increased from 560px */
+    width: 750px;
+    height: 610px;
     background: linear-gradient(to bottom, var(--red) 0%, var(--red) 80%, #cc0000 100%);
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(0, 0, 0, 0.2);
@@ -42,10 +42,10 @@ body {
 
 .canvas-screen {
     position: absolute;
-    top: 70px; /* Increased from 50px */
-    left: 180px; /* Increased from 140px */
-    width: 800px; /* Increased from 600px */
-    height: 600px; /* Increased from 400px */
+    top: 50px;
+    left: 75px;
+    width: 600px;
+    height: 450px;
     background: var(--screen) url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAKUlEQVQoU2NkYGAwZmBgOMYq8P+/f/8eDMMYGBgY/h8o6oHx0UBaAAAzhA0ycU4JZwAAAABJRU5ErkJggg==') repeat;
     box-shadow: inset 0 0 8px var(--dark-gray);
     border: 4px solid var(--silver);
@@ -54,8 +54,8 @@ body {
 }
 
 canvas {
-    width: 800px !important; /* Increased from 600px */
-    height: 600px !important; /* Increased from 400px */
+    width: 600px !important;
+    height: 450px !important;
     background: var(--screen);
     z-index: 2;
 }
@@ -102,17 +102,17 @@ canvas {
     transition: background 0.2s;
 }
 
-/* Styling for zoom buttons (unchanged) */
+/* Styling for zoom buttons */
 .zoom-buttons .canvas-zoom-btn {
-    width: 40px;
-    height: 40px;
+    width: 32px; /* Reduced from 40px */
+    height: 32px; /* Reduced from 40px */
     background: var(--button-face);
     color: var(--black);
     border: 2px outset var(--white);
     border-radius: 4px;
     cursor: pointer;
     font-family: 'Arial', sans-serif;
-    font-size: 18px;
+    font-size: 16px; /* Reduced from 18px */
     display: flex;
     justify-content: center;
     align-items: center;
