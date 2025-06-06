@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Editor - Retro Style</title>
+    <title>Retro Image Editor</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Include Fabric.js via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
 </head>
 <body>
     <div class="canvas-container">
@@ -24,15 +26,16 @@
                 <button id="zoomOut" class="canvas-zoom-btn">-</button>
             </div>
         </div>
-        <div id="stickerOverlay" class="sticker-overlay">
-            <div class="sticker-container">
-                <h2>Select a Sticker</h2>
-                <div class="canvas-sticker-grid">
-                    <img src="stickers/sticker1.png" data-sticker="sticker1.png" alt="Sticker 1">
-                    <img src="stickers/sticker2.png" data-sticker="sticker2.png" alt="Sticker 2">
-                    <img src="stickers/sticker3.png" data-sticker="sticker3.png" alt="Sticker 3">
-                </div>
-                <button id="closeOverlay" class="canvas-reset-btn">Close</button>
+    </div>
+    <div class="sticker-overlay" id="stickerOverlay">
+        <div class="sticker-container">
+            <button id="closeOverlay">Close</button>
+            <div class="canvas-sticker-grid">
+                <img src="stickers/sticker1.png" data-sticker="sticker1.png" alt="Sticker 1">
+                <img src="stickers/sticker2.png" data-sticker="sticker2.png" alt="Sticker 2">
+                <img src="stickers/sticker3.png" data-sticker="sticker3.png" alt="Sticker 3">
+                <img src="stickers/sticker4.png" data-sticker="sticker4.png" alt="Sticker 4">
+                <img src="stickers/sticker5.png" data-sticker="sticker5.png" alt="Sticker 5">
             </div>
         </div>
     </div>
