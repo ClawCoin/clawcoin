@@ -27,18 +27,19 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
+    margin: 0; /* Ensure no margins create gaps */
 }
 
 .canvas-frame {
     position: relative;
-    width: calc(min(80vw, 80vh * 4 / 3) + clamp(80px, 10vw, 120px)); /* Scales with canvas + margins */
+    width: 100vw; /* Full viewport width, touches both sides */
     min-height: calc(min(80vw * 3 / 4, 80vh) + clamp(100px, 15vw, 140px)); /* Canvas height + space for buttons */
     background: linear-gradient(to bottom, var(--red) 0%, var(--red) 80%, #cc0000 100%);
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     box-sizing: border-box;
-    padding-bottom: clamp(80px, 12vw, 100px); /* Increased space for larger buttons */
+    padding-bottom: clamp(80px, 12vw, 100px); /* Space for larger buttons */
     display: flex; /* Center canvas-screen */
     justify-content: center;
     align-items: center;
@@ -71,7 +72,7 @@ canvas {
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: clamp(8px, 1.5vw, 16px); /* Increased gap for larger buttons */
+    gap: clamp(8px, 1.5vw, 16px); /* Larger gap for bigger buttons */
     z-index: 3;
     flex: 0 0 auto;
 }
@@ -92,15 +93,15 @@ canvas {
 .canvas-stickers-btn,
 .canvas-download-btn,
 .canvas-reset-btn {
-    width: clamp(90px, 15vw, 160px); /* Increased from 70px/12vw/120px */
-    height: clamp(36px, 6vw, 60px); /* Increased from 28px/4.8vw/48px */
+    width: clamp(90px, 15vw, 160px); /* Larger buttons */
+    height: clamp(36px, 6vw, 60px);
     background: var(--button-face);
     color: var(--black);
     border: 2px outset var(--white);
     border-radius: 4px;
     cursor: pointer;
     font-family: 'Verdana', 'Geneva', sans-serif;
-    font-size: clamp(14px, 2.5vw, 20px); /* Increased from 12px/2vw/16px */
+    font-size: clamp(14px, 2.5vw, 20px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -197,9 +198,9 @@ canvas {
 /* Mobile-specific adjustments */
 @media screen and (max-width: 600px) {
     .canvas-frame {
-        width: calc(min(80vw, 80vh * 4 / 3) + clamp(40px, 8vw, 60px));
+        width: 100vw; /* Full viewport width */
         min-height: calc(min(80vw * 3 / 4, 80vh) + clamp(80px, 20vw, 120px));
-        padding-bottom: clamp(140px, 35vw, 180px); /* Increased for larger buttons */
+        padding-bottom: clamp(140px, 35vw, 180px); /* Space for larger buttons */
     }
 
     .canvas-screen {
@@ -213,7 +214,7 @@ canvas {
 
     .main-buttons {
         flex-direction: column;
-        gap: clamp(6px, 1.5vw, 10px); /* Adjusted for larger buttons */
+        gap: clamp(6px, 1.5vw, 10px);
         bottom: 20px;
         width: 100%;
         align-items: center;
@@ -223,9 +224,9 @@ canvas {
     .canvas-stickers-btn,
     .canvas-download-btn,
     .canvas-reset-btn {
-        width: clamp(80px, 25vw, 120px); /* Increased from 60px/22vw/90px */
-        height: clamp(32px, 10vw, 48px); /* Increased from 24px/8.8vw/36px */
-        font-size: clamp(12px, 3vw, 16px); /* Increased from 10px/2.8vw/14px */
+        width: clamp(80px, 25vw, 120px);
+        height: clamp(32px, 10vw, 48px);
+        font-size: clamp(12px, 3vw, 16px);
     }
 
     .zoom-buttons {
