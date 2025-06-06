@@ -31,49 +31,49 @@ body {
 
 .canvas-frame {
     position: relative;
-    width: calc(min(600px, 80vw) + clamp(80px, 10vw, 120px)); /* Scales with canvas + margins */
-    min-height: calc(min(450px, 60vw) + clamp(100px, 15vw, 140px)); /* Canvas height + top/bottom space */
+    width: calc(min(80vw, 80vh * 4 / 3) + clamp(80px, 10vw, 120px)); /* Scales with canvas + margins */
+    min-height: calc(min(80vw * 3 / 4, 80vh) + clamp(100px, 15vw, 140px)); /* Canvas height + space for buttons */
     background: linear-gradient(to bottom, var(--red) 0%, var(--red) 80%, #cc0000 100%);
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     box-sizing: border-box;
-    padding-bottom: clamp(60px, 10vw, 80px); /* Reactive space for buttons */
+    padding-bottom: clamp(80px, 12vw, 100px); /* Increased space for larger buttons */
+    display: flex; /* Center canvas-screen */
+    justify-content: center;
+    align-items: center;
 }
 
 .canvas-screen {
-    position: relative;
-    top: 50px;
-    left: calc((100% - min(600px, 80vw)) / 2); /* Center dynamically */
-    width: min(600px, 80vw); /* Scales down on mobile */
-    height: min(450px, 60vw); /* Maintains 4:3 ratio */
-    background: var(--screen) url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAKUlEQVQoU2NkYGAwZmBgOMYq8P+/f/8eDMMYGBgY/h8o6oHx0UBaAAAzhA0ycU4JZwAAAABJRU5ErkJggg==') repeat;
+    width: min(80vw, 80vh * 4 / 3); /* 80% of screen width, constrained by height */
+    height: min(80vw * 3 / 4, 80vh); /* Maintains 4:3 ratio */
+    background: white; /* White background as specified */
     box-shadow: inset 0 0 8px var(--dark-gray);
     border: 4px solid var(--silver);
-    box-sizing: border-box;
     border-radius: 2px;
+    box-sizing: border-box;
     z-index: 1;
-    background: white;
 }
 
 canvas {
-    position: absolute; /* Positions it within the container */
-    top: 0; /* Aligns to the top edge */
-    left: 0; /* Aligns to the left edge */
-    width: 100%; /* Takes up the full width of the container */
-    height: 100%; /* Takes up the full height of the container */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
 }
 
 /* Main buttons centered at the bottom */
 .main-buttons {
     position: absolute;
-    bottom: 20px; /* Below canvas */
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: clamp(6px, 1.2vw, 12px); /* Slightly larger reactive gap */
+    gap: clamp(8px, 1.5vw, 16px); /* Increased gap for larger buttons */
     z-index: 3;
-    flex: 0 0 auto; /* Prevent flex stretching */
+    flex: 0 0 auto;
 }
 
 /* Zoom buttons at the top right */
@@ -82,9 +82,9 @@ canvas {
     top: 10px;
     right: 10px;
     display: flex;
-    gap: clamp(4px, 0.6vw, 6px); /* Slightly larger reactive gap */
+    gap: clamp(4px, 0.6vw, 6px);
     z-index: 3;
-    flex: 0 0 auto; /* Prevent flex stretching */
+    flex: 0 0 auto;
 }
 
 /* Styling for main buttons */
@@ -92,15 +92,15 @@ canvas {
 .canvas-stickers-btn,
 .canvas-download-btn,
 .canvas-reset-btn {
-    width: clamp(70px, 12vw, 120px); /* Larger width ~90px at 750px */
-    height: clamp(28px, 4.8vw, 48px); /* Larger height ~36px at 750px */
+    width: clamp(90px, 15vw, 160px); /* Increased from 70px/12vw/120px */
+    height: clamp(36px, 6vw, 60px); /* Increased from 28px/4.8vw/48px */
     background: var(--button-face);
     color: var(--black);
     border: 2px outset var(--white);
     border-radius: 4px;
     cursor: pointer;
     font-family: 'Verdana', 'Geneva', sans-serif;
-    font-size: clamp(12px, 2vw, 16px); /* Larger font ~14px at 750px */
+    font-size: clamp(14px, 2.5vw, 20px); /* Increased from 12px/2vw/16px */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -110,15 +110,15 @@ canvas {
 
 /* Styling for zoom buttons */
 .zoom-buttons .canvas-zoom-btn {
-    width: clamp(24px, 3vw, 32px); /* Larger width ~22px at 750px */
-    height: clamp(24px, 3vw, 32px); /* Larger height ~22px at 750px */
+    width: clamp(24px, 3vw, 32px);
+    height: clamp(24px, 3vw, 32px);
     background: var(--button-face);
     color: var(--black);
     border: 2px outset var(--white);
     border-radius: 4px;
     cursor: pointer;
     font-family: 'Arial', sans-serif;
-    font-size: clamp(9px, 1.4vw, 14px); /* Larger font ~10px at 750px */
+    font-size: clamp(9px, 1.4vw, 14px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -170,7 +170,7 @@ canvas {
 
 .canvas-sticker-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(clamp(50px, 7vw, 70px), 1fr)); /* Reactive grid */
+    grid-template-columns: repeat(auto-fit, minmax(clamp(50px, 7vw, 70px), 1fr));
     gap: 10px;
     padding: 10px;
     background: var(--white);
@@ -181,7 +181,7 @@ canvas {
 
 .canvas-sticker-grid img {
     width: 100%;
-    height: clamp(50px, 7vw, 70px); /* Reactive sticker size */
+    height: clamp(50px, 7vw, 70px);
     object-fit: contain;
     cursor: pointer;
     border: 1px solid var(--dark-gray);
@@ -197,24 +197,23 @@ canvas {
 /* Mobile-specific adjustments */
 @media screen and (max-width: 600px) {
     .canvas-frame {
-        width: calc(min(600px, 80vw) + clamp(40px, 8vw, 60px)); /* Scales with canvas + smaller margins */
-        min-height: calc(min(450px, 60vw) + clamp(80px, 20vw, 120px)); /* Adjusted for stacked buttons */
-        padding-bottom: clamp(120px, 30vw, 160px); /* Reactive space for buttons */
+        width: calc(min(80vw, 80vh * 4 / 3) + clamp(40px, 8vw, 60px));
+        min-height: calc(min(80vw * 3 / 4, 80vh) + clamp(80px, 20vw, 120px));
+        padding-bottom: clamp(140px, 35vw, 180px); /* Increased for larger buttons */
     }
 
     .canvas-screen {
-    position: relative; /* Allows absolute positioning of the canvas inside */
-    width: 600px; /* Set your desired width, or use a responsive value like 80vw */
-    height: 450px; /* Set your desired height, or use a responsive value like 60vw */
-    border: 4px solid silver; /* Your border style */
-    box-sizing: border-box; /* Includes the border in the width and height */
-    margin: 50px auto 0; /* Centers the container, adjust as needed */
-    background: white;
-}
+        width: min(80vw, 80vh * 4 / 3);
+        height: min(80vw * 3 / 4, 80vh);
+        margin: 0 auto; /* Center horizontally */
+        border: 4px solid var(--silver);
+        box-sizing: border-box;
+        background: white;
+    }
 
     .main-buttons {
-        flex-direction: column; /* Stack vertically */
-        gap: clamp(4px, 1.2vw, 6px); /* Slightly larger reactive gap */
+        flex-direction: column;
+        gap: clamp(6px, 1.5vw, 10px); /* Adjusted for larger buttons */
         bottom: 20px;
         width: 100%;
         align-items: center;
@@ -224,21 +223,21 @@ canvas {
     .canvas-stickers-btn,
     .canvas-download-btn,
     .canvas-reset-btn {
-        width: clamp(60px, 22vw, 90px); /* Larger width ~82px at 375px */
-        height: clamp(24px, 8.8vw, 36px); /* Larger height ~33px at 375px */
-        font-size: clamp(10px, 2.8vw, 14px); /* Larger font ~10px at 375px */
+        width: clamp(80px, 25vw, 120px); /* Increased from 60px/22vw/90px */
+        height: clamp(32px, 10vw, 48px); /* Increased from 24px/8.8vw/36px */
+        font-size: clamp(12px, 3vw, 16px); /* Increased from 10px/2.8vw/14px */
     }
 
     .zoom-buttons {
         top: 5px;
         right: 5px;
-        gap: clamp(3px, 0.6vw, 4px); /* Slightly larger reactive gap */
+        gap: clamp(3px, 0.6vw, 4px);
     }
 
     .zoom-buttons .canvas-zoom-btn {
-        width: clamp(18px, 5.5vw, 28px); /* Larger width ~21px at 375px */
-        height: clamp(18px, 5.5vw, 28px); /* Larger height ~21px at 375px */
-        font-size: clamp(9px, 2.2vw, 12px); /* Larger font ~8px at 375px */
+        width: clamp(18px, 5.5vw, 28px);
+        height: clamp(18px, 5.5vw, 28px);
+        font-size: clamp(9px, 2.2vw, 12px);
     }
 
     .sticker-container {
@@ -246,6 +245,6 @@ canvas {
     }
 
     .canvas-sticker-grid img {
-        height: clamp(40px, 10vw, 60px); /* Reactive stickers */
+        height: clamp(40px, 10vw, 60px);
     }
 }
