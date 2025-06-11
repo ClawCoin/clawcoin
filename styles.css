@@ -171,9 +171,9 @@ canvas {
 
 .canvas-sticker-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(clamp(50px, 7vw, 70px), 1fr));
-    gap: 10px;
-    padding: 10px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px; /* Slightly increased gap for larger images */
+    padding: 12px; /* Slightly increased padding */
     background: var(--white);
     border: 2px inset var(--dark-gray);
     margin-top: 10px;
@@ -182,12 +182,12 @@ canvas {
 
 .canvas-sticker-grid img {
     width: 100%;
-    height: clamp(50px, 7vw, 70px);
+    height: clamp(120px, 14vw, 180px); /* Larger size */
     object-fit: contain;
     cursor: pointer;
     border: 1px solid var(--dark-gray);
     background: var(--dark-gray);
-    padding: 2px;
+    padding: 3px; /* Slightly increased padding for balance */
 }
 
 .canvas-sticker-grid img:hover {
@@ -246,6 +246,6 @@ canvas {
     }
 
     .canvas-sticker-grid img {
-        height: clamp(40px, 10vw, 60px);
+        height: clamp(100px, 16vw, 140px); /* Larger size for mobile */
     }
 }
