@@ -75,15 +75,26 @@ canvas {
     gap: clamp(8px, 1.5vw, 16px); /* Larger gap for bigger buttons */
     z-index: 3;
     flex: 0 0 auto;
+    justify-content: center; /* Ensure buttons are centered */
 }
 
-/* Zoom buttons at the top right */
+/* Zoom buttons at the top left */
 .zoom-buttons {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: clamp(4px, 0.6vw, 6px);
+    z-index: 3;
+    flex: 0 0 auto;
+}
+
+/* Clear button at the top right */
+.clear-button {
     position: absolute;
     top: 10px;
     right: 10px;
     display: flex;
-    gap: clamp(4px, 0.6vw, 6px);
     z-index: 3;
     flex: 0 0 auto;
 }
@@ -92,7 +103,7 @@ canvas {
 .canvas-upload-label,
 .canvas-stickers-btn,
 .canvas-download-btn,
-.canvas-reset-btn {
+.canvas-delete-btn {
     width: clamp(90px, 15vw, 160px); /* Larger buttons */
     height: clamp(36px, 6vw, 60px);
     background: var(--button-face);
@@ -127,20 +138,40 @@ canvas {
     transition: background 0.2s;
 }
 
+/* Styling for clear button */
+.clear-button .canvas-reset-btn {
+    width: clamp(48px, 6vw, 64px); /* Doubled from 24px, 3vw, 32px */
+    height: clamp(24px, 3vw, 32px);
+    background: var(--button-face);
+    color: var(--black);
+    border: 2px outset var(--white);
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Arial', sans-serif;
+    font-size: clamp(9px, 1.4vw, 14px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    transition: background 0.2s;
+}
+
 /* Hover and active states for all buttons */
 .canvas-upload-label:hover,
 .canvas-stickers-btn:hover,
 .canvas-download-btn:hover,
-.canvas-reset-btn:hover,
-.zoom-buttons .canvas-zoom-btn:hover {
+.canvas-delete-btn:hover,
+.zoom-buttons .canvas-zoom-btn:hover,
+.clear-button .canvas-reset-btn:hover {
     background: var(--button-highlight);
 }
 
 .canvas-upload-label:active,
 .canvas-stickers-btn:active,
 .canvas-download-btn:active,
-.canvas-reset-btn:active,
-.zoom-buttons .canvas-zoom-btn:active {
+.canvas-delete-btn:active,
+.zoom-buttons .canvas-zoom-btn:active,
+.clear-button .canvas-reset-btn:active {
     border: 2px inset var(--dark-gray);
     box-shadow: inset 1px 1px 2px var(--dark-gray);
 }
@@ -171,7 +202,7 @@ canvas {
 
 .canvas-sticker-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 12px; /* Slightly increased gap for larger images */
     padding: 12px; /* Slightly increased padding */
     background: var(--white);
@@ -223,7 +254,7 @@ canvas {
     .canvas-upload-label,
     .canvas-stickers-btn,
     .canvas-download-btn,
-    .canvas-reset-btn {
+    .canvas-delete-btn {
         width: clamp(80px, 25vw, 120px);
         height: clamp(32px, 10vw, 48px);
         font-size: clamp(12px, 3vw, 16px);
@@ -231,12 +262,23 @@ canvas {
 
     .zoom-buttons {
         top: 5px;
-        right: 5px;
+        left: 5px;
         gap: clamp(3px, 0.6vw, 4px);
+    }
+
+    .clear-button {
+        top: 5px;
+        right: 5px;
     }
 
     .zoom-buttons .canvas-zoom-btn {
         width: clamp(18px, 5.5vw, 28px);
+        height: clamp(18px, 5.5vw, 28px);
+        font-size: clamp(9px, 2.2vw, 12px);
+    }
+
+    .clear-button .canvas-reset-btn {
+        width: clamp(36px, 11vw, 56px); /* Doubled from 18px, 5.5vw, 28px */
         height: clamp(18px, 5.5vw, 28px);
         font-size: clamp(9px, 2.2vw, 12px);
     }
