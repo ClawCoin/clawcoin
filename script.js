@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const zoomOut = document.getElementById('zoomOut');
     const clearCanvas = document.getElementById('clearCanvas');
     const downloadImage = document.getElementById('downloadImage');
+    const deleteSticker = document.getElementById('deleteSticker');
 
     // Initialize zoom variables
     let zoomScale = 1;
@@ -165,16 +166,41 @@ document.addEventListener('DOMContentLoaded', () => {
         updateStickerRelativePosition(e.target);
     });
     canvas.on('object:scaling', (e) => {
-    const stickerObj = e.target;
-    const initialScale = stickerInitialScales.get(stickerObj);
-    if (initialScale) {
-        // Store separate scale factors for X and Y, adjusted for zoom
-        const newScaleX = stickerObj.scaleX / zoomScale;
-        const newScaleY = stickerObj.scaleY / zoomScale;
-        stickerInitialScales.set(stickerObj, { scaleX: newScaleX, scaleY: newScaleY });
-        // No need to set scaleX/scaleY here; Fabric.js handles it during scaling
-        updateStickerRelativePosition(stickerObj);
-    }
+        const stickerObj = e.target;
+        const initialScale = stickerInitialScales.get(stickerObj);
+        if (initialScale) {
+            // Calculate the new scale factor based on the average of scaleX and scaleY, adjusted for zoom
+            const newScaleFactor = (stickerObj.scaleX / zoomScale + stickerObj.scaleY / zoomScale) / 2;
+            stickerInitialScales.set(stickerObj, newScaleFactor);
+            updateStickerRelativePosition(stickerObj);
+        }
+    });
+
+    // Delete selected sticker (shared logic for button and keyboard)
+    const deleteSelectedSticker = () => {
+        const activeObject = canvas.getActiveObject();
+        if (activeObject && activeObject.type === 'image') { // Ensure it's a sticker (image)
+            canvas.remove(activeObject);
+            stickerInitialScales.delete(activeObject);
+            stickerRelativePositions.delete(activeObject);
+            canvas.discardActiveObject();
+            canvas.renderAll();
+        } else {
+            alert('Please select a sticker to delete.');
+        }
+    };
+
+    // Delete sticker via button
+    deleteSticker.addEventListener('click', () => {
+        deleteSelectedSticker();
+    });
+
+    // Delete sticker via keyboard Delete or Backspace key
+    document.addEventListener('keydown', (e) => {
+        if ((e.key === 'Delete' || e.key === 'Backspace') && !['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
+            e.preventDefault(); // Prevent browser default actions
+            deleteSelectedSticker();
+        }
     });
 
     // Zoom controls
