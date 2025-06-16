@@ -18,12 +18,15 @@
                 <label for="imageUpload" class="canvas-upload-label">Upload Image</label>
                 <input type="file" id="imageUpload" accept="image/*" style="display: none;">
                 <button id="stickerButton" class="canvas-stickers-btn">Stickers</button>
-                <button id="clearCanvas" class="canvas-reset-btn">Clear</button>
+                <button id="deleteSticker" class="canvas-delete-btn">Delete</button>
                 <button id="downloadImage" class="canvas-download-btn">Download</button>
             </div>
             <div class="zoom-buttons">
                 <button id="zoomIn" class="canvas-zoom-btn">+</button>
                 <button id="zoomOut" class="canvas-zoom-btn">-</button>
+            </div>
+            <div class="clear-button">
+                <button id="clearCanvas" class="canvas-reset-btn">Clear</button>
             </div>
         </div>
     </div>
@@ -31,17 +34,14 @@
         <div class="sticker-container">
             <button id="closeOverlay">Close</button>
             <div class="canvas-sticker-grid">
-                <img src="stickers/alienplush3.png" data-sticker="sticker1.png" alt="Sticker 1">
-                <img src="stickers/aliencapslimmed.png" data-sticker="sticker2.png" alt="Sticker 2">
-                <img src="stickers/AlienBomber.png" data-sticker="sticker3.png" alt="Sticker 3">
-                <img src="stickers/AlienBeanie.png" data-sticker="sticker5.png" alt="Sticker 4">
-                <img src="stickers/sticker1.png" data-sticker="sticker5.png" alt="Sticker 5">
+                <img src="stickers/alienplush3.png" data-sticker="alienplush3.png" alt="Sticker 1">
+                <img src="stickers/aliencapslimmed.png" data-sticker="aliencapslimmed.png" alt="Sticker 2">
+                <img src="stickers/AlienBomber.png" data-sticker="AlienBomber.png" alt="Sticker 3">
+                <img src="stickers/AlienBeanie.png" data-sticker="AlienBeanie.png" alt="Sticker 4">
+                <img src="stickers/sticker1.png" data-sticker="sticker1.png" alt="Sticker 5">
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
-</body>
-</html>
     <script src="script.js"></script>
 </body>
 </html>
