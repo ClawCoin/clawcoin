@@ -78,22 +78,24 @@ canvas {
     justify-content: center; /* Ensure buttons are centered */
 }
 
-/* Zoom buttons at the top left */
+/* Zoom buttons centered in the left red border */
 .zoom-buttons {
     position: absolute;
     top: 10px;
-    left: 10px;
+    left: calc((100vw - min(80vw, 80vh * 4 / 3)) / 4); /* Center in left red border */
+    transform: translateX(-50%);
     display: flex;
     gap: clamp(4px, 0.6vw, 6px);
     z-index: 3;
     flex: 0 0 auto;
 }
 
-/* Clear button at the top right */
+/* Clear button centered in the right red border */
 .clear-button {
     position: absolute;
     top: 10px;
-    right: 10px;
+    right: calc((100vw - min(80vw, 80vh * 4 / 3)) / 4); /* Center in right red border */
+    transform: translateX(50%);
     display: flex;
     z-index: 3;
     flex: 0 0 auto;
@@ -156,13 +158,33 @@ canvas {
     transition: background 0.2s;
 }
 
+/* Styling for close button */
+.canvas-close-btn {
+    width: clamp(80px, 14vw, 140px); /* Larger button */
+    height: clamp(32px, 6vw, 40px); /* Larger button */
+    background: var(--button-face);
+    color: var(--black);
+    border: 2px outset var(--white);
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Verdana', 'Geneva', sans-serif;
+    font-size: clamp(16px, 2.8vw, 20px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    transition: background 0.2s;
+    margin-bottom: 20px; /* Increased spacing */
+}
+
 /* Hover and active states for all buttons */
 .canvas-upload-label:hover,
 .canvas-stickers-btn:hover,
 .canvas-download-btn:hover,
 .canvas-delete-btn:hover,
 .zoom-buttons .canvas-zoom-btn:hover,
-.clear-button .canvas-reset-btn:hover {
+.clear-button .canvas-reset-btn:hover,
+.canvas-close-btn:hover {
     background: var(--button-highlight);
 }
 
@@ -171,7 +193,8 @@ canvas {
 .canvas-download-btn:active,
 .canvas-delete-btn:active,
 .zoom-buttons .canvas-zoom-btn:active,
-.clear-button .canvas-reset-btn:active {
+.clear-button .canvas-reset-btn:active,
+.canvas-close-btn:active {
     border: 2px inset var(--dark-gray);
     box-shadow: inset 1px 1px 2px var(--dark-gray);
 }
@@ -184,7 +207,7 @@ canvas {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6); /* Slightly darker for focus */
     justify-content: center;
     align-items: center;
     z-index: 1000;
@@ -192,38 +215,43 @@ canvas {
 
 .sticker-container {
     background: var(--white);
-    padding: 20px;
+    padding: clamp(25px, 5vw, 35px); /* Increased padding */
     border: 2px inset var(--dark-gray);
     border-radius: 4px;
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
-    max-width: 90vw;
-    width: 90%;
+    max-width: min(95vw, 1000px); /* Larger container */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .canvas-sticker-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px; /* Slightly increased gap for larger images */
-    padding: 12px; /* Slightly increased padding */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Larger stickers */
+    gap: 25px; /* Increased gap */
+    padding: 25px; /* Increased padding */
     background: var(--white);
     border: 2px inset var(--dark-gray);
     margin-top: 10px;
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    max-height: 65vh; /* Taller for more stickers */
+    overflow-y: auto; /* Enable scrolling */
 }
 
 .canvas-sticker-grid img {
     width: 100%;
-    height: clamp(120px, 14vw, 180px); /* Larger size */
+    height: clamp(160px, 18vw, 200px); /* Larger stickers */
     object-fit: contain;
     cursor: pointer;
     border: 1px solid var(--dark-gray);
     background: var(--dark-gray);
-    padding: 3px; /* Slightly increased padding for balance */
+    padding: 6px; /* Slightly increased */
+    transition: transform 0.2s, border 0.2s, background 0.2s; /* Smooth hover effect */
 }
 
 .canvas-sticker-grid img:hover {
     border: 1px solid var(--black);
     background: var(--white);
+    transform: scale(1.05); /* Slight scale-up on hover */
 }
 
 /* Mobile-specific adjustments */
@@ -262,13 +290,15 @@ canvas {
 
     .zoom-buttons {
         top: 5px;
-        left: 5px;
+        left: calc((100vw - min(80vw, 80vh * 4 / 3)) / 4); /* Center in left red border */
+        transform: translateX(-50%);
         gap: clamp(3px, 0.6vw, 4px);
     }
 
     .clear-button {
         top: 5px;
-        right: 5px;
+        right: calc((100vw - min(80vw, 80vh * 4 / 3)) / 4); /* Center in right red border */
+        transform: translateX(50%);
     }
 
     .zoom-buttons .canvas-zoom-btn {
@@ -278,16 +308,31 @@ canvas {
     }
 
     .clear-button .canvas-reset-btn {
-        width: clamp(36px, 11vw, 56px); /* Doubled from 18px, 5.5vw, 28px */
+        width: clamp(36px, 11vw, 56px);
         height: clamp(18px, 5.5vw, 28px);
         font-size: clamp(9px, 2.2vw, 12px);
     }
 
+    .canvas-close-btn {
+        width: clamp(70px, 16vw, 100px);
+        height: clamp(28px, 7vw, 36px);
+        font-size: clamp(14px, 3.5vw, 18px);
+    }
+
     .sticker-container {
-        padding: 10px;
+        padding: clamp(20px, 4vw, 25px);
+        max-width: 98vw; /* Maximize space on mobile */
+    }
+
+    .canvas-sticker-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Slightly smaller stickers */
+        gap: 15px;
+        padding: 15px;
+        max-height: 75vh; /* Taller for mobile */
     }
 
     .canvas-sticker-grid img {
-        height: clamp(100px, 16vw, 140px); /* Larger size for mobile */
+        height: clamp(120px, 20vw, 160px); /* Slightly larger for mobile */
+        padding: 4px;
     }
 }
