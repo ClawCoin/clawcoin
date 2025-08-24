@@ -1,9 +1,123 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Function to trim surrounding transparent pixels from a canvas
+    // Based on https://gist.github.com/remy/784508 with fix for cropping one pixel too much
+    function trim(c) {
+        var ctx = c.getContext('2d'),
+            copy = document.createElement('canvas').getContext('2d'),
+            pixels = ctx.getImageData(0, 0, c.width, c.height),
+            l = pixels.data.length,
+            i,
+            bound = {
+                top: null,
+                left: null,
+                right: null,
+                bottom: null
+            },
+            x, y;
+
+        for (i = 0; i < l; i += 4) {
+            if (pixels.data[i + 3] !== 0) {
+                x = (i / 4) % c.width;
+                y = ~~((i / 4) / c.width);
+
+                if (bound.top === null) {
+                    bound.top = y;
+                }
+
+                if (bound.left === null) {
+                    bound.left = x;
+                } else if (x < bound.left) {
+                    bound.left = x;
+                }
+
+                if (bound.right === null) {
+                    bound.right = x;
+                } else if (bound.right < x) {
+                    bound.right = x;
+                }
+
+                if (bound.bottom === null) {
+                    bound.bottom = y;
+                } else if (bound.bottom < y) {
+                    bound.bottom = y;
+                }
+            }
+        }
+
+        // If fully transparent, return original to avoid errors
+        if (bound.top === null) {
+            return c;
+        }
+
+        // Fix for cropping one pixel too much
+        bound.bottom += 1;
+        bound.right += 1;
+
+        var trimHeight = bound.bottom - bound.top,
+            trimWidth = bound.right - bound.left,
+            trimmed = ctx.getImageData(bound.left, bound.top, trimWidth, trimHeight);
+
+        copy.canvas.width = trimWidth;
+        copy.canvas.height = trimHeight;
+        copy.putImageData(trimmed, 0, 0);
+
+        return copy.canvas;
+    }
+
     // Initialize Fabric.js canvas
     const canvas = new fabric.Canvas('canvas');
     
-    // Set smaller resizing handles for all objects
-    fabric.Object.prototype.cornerSize = 10; // Reduced from default ~13
+    // Set larger resizing handles for all objects
+    fabric.Object.prototype.cornerSize = 15; // Increased by 50% from 10
+
+    // Customize selection and control colors for better visibility
+    fabric.Object.prototype.borderColor = '#333333'; // Dark gray for the resize box border
+    fabric.Object.prototype.cornerColor = '#00ff00'; // Bright green fill for resize handles
+    fabric.Object.prototype.cornerStrokeColor = '#333333'; // Dark gray stroke for resize handles
+    fabric.Object.prototype.transparentCorners = false; // Solid handles
+    fabric.Object.prototype.cornerStyle = 'rect'; // Rectangular resize handles
+
+    // Custom render function for the rotation handles to make them larger and circular
+    function renderRotationIcon(ctx, left, top, styleOverride, fabricObject) {
+        var size = 21; // Increased by 50% from 14
+        ctx.save();
+        ctx.translate(left, top);
+        ctx.fillStyle = '#ff0000'; // Pure red fill to stand out
+        ctx.strokeStyle = '#333333'; // Dark gray stroke
+        ctx.beginPath();
+        ctx.arc(0, 0, size / 2, 0, 2 * Math.PI, false);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    // Override the top-middle rotation control (mtr)
+    fabric.Object.prototype.controls.mtr = new fabric.Control({
+        x: 0,
+        y: -0.5,
+        offsetY: -40, // Increased from -30 to move further from resize handle
+        cursorStyle: 'crosshair',
+        actionHandler: fabric.controlsUtils.rotationWithSnapping,
+        actionName: 'rotate',
+        render: renderRotationIcon,
+        sizeX: 21,
+        sizeY: 21,
+        withConnection: true // Draws a line connecting to the object
+    });
+
+    // Add bottom-middle rotation control (mbr)
+    fabric.Object.prototype.controls.mbr = new fabric.Control({
+        x: 0,
+        y: 0.5,
+        offsetY: 40, // Increased from 30 to move further from resize handle
+        cursorStyle: 'crosshair',
+        actionHandler: fabric.controlsUtils.rotationWithSnapping,
+        actionName: 'rotate',
+        render: renderRotationIcon,
+        sizeX: 21,
+        sizeY: 21,
+        withConnection: true // Draws a line connecting to the object
+    });
 
     // Get DOM elements
     const imageUpload = document.getElementById('imageUpload');
@@ -130,31 +244,53 @@ document.addEventListener('DOMContentLoaded', () => {
         stickerOverlay.style.display = 'none';
     });
 
+    // Close overlay when clicking outside .sticker-container
+    stickerOverlay.addEventListener('click', (e) => {
+        if (e.target === stickerOverlay) {
+            stickerOverlay.style.display = 'none';
+        }
+    });
+
     // Add stickers
     document.querySelectorAll('.canvas-sticker-grid img').forEach(stickerImg => {
         stickerImg.addEventListener('click', (e) => {
             if (canvas.backgroundImage) {
-                const stickerSrc = e.target.dataset.sticker;
-                fabric.Image.fromURL(`stickers/${stickerSrc}`, (stickerObj) => {
-                    const scaleFactor = 250 / stickerObj.width; // Initial sticker size
-                    stickerInitialScales.set(stickerObj, scaleFactor);
-                    stickerObj.set({
-                        left: canvas.width / 2,
-                        top: canvas.height / 2,
-                        originX: 'center',
-                        originY: 'center',
-                        scaleX: scaleFactor * zoomScale,
-                        scaleY: scaleFactor * zoomScale,
-                        selectable: true,
-                        hasControls: true,
-                        hasBorders: true
+                const stickerSrc = `stickers/${e.target.dataset.sticker}`;
+                
+                // Load image and trim transparent borders
+                const img = new Image();
+                img.src = stickerSrc;
+                img.onload = () => {
+                    const tempCanvas = document.createElement('canvas');
+                    tempCanvas.width = img.width;
+                    tempCanvas.height = img.height;
+                    const ctx = tempCanvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    
+                    const trimmedCanvas = trim(tempCanvas);
+                    const trimmedSrc = trimmedCanvas.toDataURL();
+                    
+                    fabric.Image.fromURL(trimmedSrc, (stickerObj) => {
+                        const scaleFactor = 250 / stickerObj.width; // Initial sticker size (now based on trimmed width)
+                        stickerInitialScales.set(stickerObj, scaleFactor);
+                        stickerObj.set({
+                            left: canvas.width / 2,
+                            top: canvas.height / 2,
+                            originX: 'center',
+                            originY: 'center',
+                            scaleX: scaleFactor * zoomScale,
+                            scaleY: scaleFactor * zoomScale,
+                            selectable: true,
+                            hasControls: true,
+                            hasBorders: true
+                        });
+                        canvas.add(stickerObj);
+                        canvas.setActiveObject(stickerObj);
+                        updateStickerRelativePosition(stickerObj); // Set initial relative position
+                        canvas.renderAll();
+                        stickerOverlay.style.display = 'none';
                     });
-                    canvas.add(stickerObj);
-                    canvas.setActiveObject(stickerObj);
-                    updateStickerRelativePosition(stickerObj); // Set initial relative position
-                    canvas.renderAll();
-                    stickerOverlay.style.display = 'none';
-                });
+                };
             } else {
                 alert('Please upload an image first.');
             }
@@ -211,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (bg) {
                 bg.set({
                     scaleX: fitScaleX * zoomScale,
-                    scaleY: fitScaleY * zoomScale
+                    scaleY: veritableScaleY * zoomScale
                 });
                 // Update sticker scales and positions
                 canvas.getObjects().forEach(obj => {
