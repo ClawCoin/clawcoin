@@ -342,12 +342,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Zoom controls
     zoomIn.addEventListener('click', () => {
         if (zoomScale < maxScale) {
-            zoomScale += 0.1;
+            zoomScale = Math.min(maxScale, zoomScale + 0.1); // Increment zoomScale, cap at maxScale
             const bg = canvas.backgroundImage;
             if (bg) {
                 bg.set({
                     scaleX: fitScaleX * zoomScale,
-                    scaleY: veritableScaleY * zoomScale
+                    scaleY: fitScaleY * zoomScale,
+                    left: canvas.width / 2,
+                    top: canvas.height / 2
                 });
                 // Update sticker scales and positions
                 canvas.getObjects().forEach(obj => {
@@ -369,12 +371,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     zoomOut.addEventListener('click', () => {
         if (zoomScale > minScale) {
-            zoomScale -= 0.1;
+            zoomScale = Math.max(minScale, zoomScale - 0.1); // Decrement zoomScale, cap at minScale
             const bg = canvas.backgroundImage;
             if (bg) {
                 bg.set({
                     scaleX: fitScaleX * zoomScale,
-                    scaleY: fitScaleY * zoomScale
+                    scaleY: fitScaleY * zoomScale,
+                    left: canvas.width / 2,
+                    top: canvas.height / 2
                 });
                 // Update sticker scales and positions
                 canvas.getObjects().forEach(obj => {
