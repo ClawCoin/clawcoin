@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let fitScaleX, fitScaleY;
 
     // Store sticker data
-    const stickerInitialScales = new Map(); // Initial scaleFactor for each sticker
+    const stickerInitialScales = new Map(); // Stores { scaleX, scaleY } for each sticker
     const stickerRelativePositions = new Map(); // Relative x, y for each sticker
 
     // Update sticker relative position when moved or scaled
@@ -180,12 +180,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             // Update sticker scales and positions
             canvas.getObjects().forEach(obj => {
-                const initialScale = stickerInitialScales.get(obj);
+                const initialScales = stickerInitialScales.get(obj);
                 const relativePos = stickerRelativePositions.get(obj);
-                if (initialScale && relativePos) {
+                if (initialScales && relativePos) {
                     obj.set({
-                        scaleX: initialScale * zoomScale,
-                        scaleY: initialScale * zoomScale,
+                        scaleX: initialScales.scaleX * zoomScale,
+                        scaleY: initialScales.scaleY * zoomScale,
                         left: bg.left + relativePos.x * bg.scaleX,
                         top: bg.top + relativePos.y * bg.scaleY
                     });
@@ -271,8 +271,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const trimmedSrc = trimmedCanvas.toDataURL();
                     
                     fabric.Image.fromURL(trimmedSrc, (stickerObj) => {
-                        const scaleFactor = 250 / stickerObj.width; // Initial sticker size (now based on trimmed width)
-                        stickerInitialScales.set(stickerObj, scaleFactor);
+                        const scaleFactor = 250 / stickerObj.width; // Initial sticker size (based on trimmed width)
+                        stickerInitialScales.set(stickerObj, { scaleX: scaleFactor, scaleY: scaleFactor });
                         stickerObj.set({
                             left: canvas.width / 2,
                             top: canvas.height / 2,
@@ -303,11 +303,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     canvas.on('object:scaling', (e) => {
         const stickerObj = e.target;
-        const initialScale = stickerInitialScales.get(stickerObj);
-        if (initialScale) {
-            // Calculate the new scale factor based on the average of scaleX and scaleY, adjusted for zoom
-            const newScaleFactor = (stickerObj.scaleX / zoomScale + stickerObj.scaleY / zoomScale) / 2;
-            stickerInitialScales.set(stickerObj, newScaleFactor);
+        if (stickerInitialScales.has(stickerObj)) {
+            // Update initial scales to reflect current scaleX and scaleY, adjusted for zoom
+            stickerInitialScales.set(stickerObj, {
+                scaleX: stickerObj.scaleX / zoomScale,
+                scaleY: stickerObj.scaleY / zoomScale
+            });
             updateStickerRelativePosition(stickerObj);
         }
     });
@@ -353,12 +354,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 // Update sticker scales and positions
                 canvas.getObjects().forEach(obj => {
-                    const initialScale = stickerInitialScales.get(obj);
+                    const initialScales = stickerInitialScales.get(obj);
                     const relativePos = stickerRelativePositions.get(obj);
-                    if (initialScale && relativePos) {
+                    if (initialScales && relativePos) {
                         obj.set({
-                            scaleX: initialScale * zoomScale,
-                            scaleY: initialScale * zoomScale,
+                            scaleX: initialScales.scaleX * zoomScale,
+                            scaleY: initialScales.scaleY * zoomScale,
                             left: bg.left + relativePos.x * bg.scaleX,
                             top: bg.top + relativePos.y * bg.scaleY
                         });
@@ -382,12 +383,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 // Update sticker scales and positions
                 canvas.getObjects().forEach(obj => {
-                    const initialScale = stickerInitialScales.get(obj);
+                    const initialScales = stickerInitialScales.get(obj);
                     const relativePos = stickerRelativePositions.get(obj);
-                    if (initialScale && relativePos) {
+                    if (initialScales && relativePos) {
                         obj.set({
-                            scaleX: initialScale * zoomScale,
-                            scaleY: initialScale * zoomScale,
+                            scaleX: initialScales.scaleX * zoomScale,
+                            scaleY: initialScales.scaleY * zoomScale,
                             left: bg.left + relativePos.x * bg.scaleX,
                             top: bg.top + relativePos.y * bg.scaleY
                         });
@@ -410,9 +411,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Download image
     downloadImage.addEventListener('click', () => {
+        if (!canvas.backgroundImage) {
+            alert('Please upload an image to download.');
+            return;
+        }
+
+        // Store current zoom state
+        const currentZoomScale = zoomScale;
+
+        // Temporarily set zoom to 1 for full resolution
+        zoomScale = 1;
+        const bg = canvas.backgroundImage;
+        bg.set({
+            scaleX: fitScaleX * zoomScale,
+            scaleY: fitScaleY * zoomScale,
+            left: canvas.width / 2,
+            top: canvas.height / 2
+        });
+        // Update sticker scales and positions for download
+        canvas.getObjects().forEach(obj => {
+            const initialScales = stickerInitialScales.get(obj);
+            const relativePos = stickerRelativePositions.get(obj);
+            if (initialScales && relativePos) {
+                obj.set({
+                    scaleX: initialScales.scaleX * zoomScale,
+                    scaleY: initialScales.scaleY * zoomScale,
+                    left: bg.left + relativePos.x * bg.scaleX,
+                    top: bg.top + relativePos.y * bg.scaleY
+                });
+            }
+        });
+        canvas.renderAll();
+
+        // Export the image
         const link = document.createElement('a');
         link.download = 'edited-image.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
+
+        // Restore original zoom state
+        zoomScale = currentZoomScale;
+        bg.set({
+            scaleX: fitScaleX * zoomScale,
+            scaleY: fitScaleY * zoomScale,
+            left: canvas.width / 2,
+            top: canvas.height / 2
+        });
+        // Restore sticker scales and positions
+        canvas.getObjects().forEach(obj => {
+            const initialScales = stickerInitialScales.get(obj);
+            const relativePos = stickerRelativePositions.get(obj);
+            if (initialScales && relativePos) {
+                obj.set({
+                    scaleX: initialScales.scaleX * zoomScale,
+                    scaleY: initialScales.scaleY * zoomScale,
+                    left: bg.left + relativePos.x * bg.scaleX,
+                    top: bg.top + relativePos.y * bg.scaleY
+                });
+            }
+        });
+        canvas.renderAll();
     });
 });
